@@ -8,46 +8,60 @@ output:
 
 
 ### Set global settings
-```{r setoptions, echo=T}
+
+```r
 library(knitr)
 opts_chunk$set(echo=T, results="hide")
 ```
 
 
 ### Loading and preprocessing the data
-```{r loaddata}
+
+```r
 rm(list=ls())
 data_df <- read.csv("activity.csv")
 ```
 
 
 ### What is mean total number of steps taken per day?
-```{r MeanStepsPerDayWithoutNA}
+
+```r
 StepsPerDay <- aggregate(steps~date, data=data_df, sum)
 hist(StepsPerDay$steps, main="Number of steps taken per day",
      xlab="Steps taken per day", ylab="Counts", breaks=12)
+```
+
+![plot of chunk MeanStepsPerDayWithoutNA](figure/MeanStepsPerDayWithoutNA-1.png) 
+
+```r
 MeanStepsPerDay <- mean(StepsPerDay$steps)
 MedianStepsPerDay <- median(StepsPerDay$steps)
 ```
 
-The mean and median steps per day are `r format(MeanStepsPerDay,2)` and `r format(MedianStepsPerDay,2)` respectively. 
+The mean and median steps per day are 10766.19 and 10765 respectively. 
 
 ### What is the average daily activity pattern?
-```{r DailyAcitivityPattern}
+
+```r
 StepsPerInterval <- aggregate(steps~interval, data=data_df, mean)
 library(ggplot2)
 p <- ggplot(StepsPerInterval, aes(interval, steps))
 p + geom_line() + labs(title="Average steps per interval",
                        x="5-min interval",y="Avg. steps")
+```
+
+![plot of chunk DailyAcitivityPattern](figure/DailyAcitivityPattern-1.png) 
+
+```r
 MaxStepInterval <- StepsPerInterval[which.max(StepsPerInterval$steps),1]
 ```
 
-The interval corresponding to the maximum number of steps is `r format(MaxStepInterval,0)`. 
+The interval corresponding to the maximum number of steps is 835. 
 
 
 ### Imputing missing values
-```{r ImputingMissingValues}
 
+```r
 NumberOfNAs <- sum(is.na(data_df[,1]))
 
 data_df2 <- data_df
@@ -62,14 +76,20 @@ for (i in UniqueIntervals[,1])
 StepsPerDay2 <- aggregate(steps~date, data=data_df2, sum)
 hist(StepsPerDay2$steps, main="Number of steps taken per day",
      xlab="Steps taken per day", ylab="Counts", breaks=12)
+```
+
+![plot of chunk ImputingMissingValues](figure/ImputingMissingValues-1.png) 
+
+```r
 MeanStepsPerDay2 <- mean(StepsPerDay2$steps)
 MedianStepsPerDay2 <- median(StepsPerDay2$steps)
 ```
 
-The mean and median number of steps per day taking into account the NAs are `r format(MeanStepsPerDay2,2)` and `r format(MedianStepsPerDay2,2)` respectively. Based on these results, the mean number of steps is not affected due to the NAs, while the median value is slightly affected, albeit negligible. It seems that by taking into account the NAs, the distribution becomes slightly more symmetrical, i.e. the mean and the median are very close to each other. 
+The mean and median number of steps per day taking into account the NAs are 10766.19 and 10766.19 respectively. Based on these results, the mean number of steps is not affected due to the NAs, while the median value is slightly affected, albeit negligible. It seems that by taking into account the NAs, the distribution becomes slightly more symmetrical, i.e. the mean and the median are very close to each other. 
 
 # Are there differences in activity patterns between weekdays and weekends?
-```{r WeekdaysActivityPatterns}
+
+```r
 data_df3 <- data_df2
 
 data_df3$weekdays <- as.factor(weekdays(as.Date(as.character(data_df3[,2]))))
@@ -95,5 +115,7 @@ StepsPerIntervalweekdays <- rbind(StepsPerIntervalWeekdays,StepsPerIntervalWeeke
 library(lattice)
 xyplot(steps~interval | weekdays, data=StepsPerIntervalweekdays, layout=c(1,2), type="l")
 ```
+
+![plot of chunk WeekdaysActivityPatterns](figure/WeekdaysActivityPatterns-1.png) 
 
 
