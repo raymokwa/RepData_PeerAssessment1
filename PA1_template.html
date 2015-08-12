@@ -246,6 +246,8 @@ p + geom_line() + labs(title=&quot;Average steps per interval&quot;,
 
 <h3>Imputing missing values</h3>
 
+<p>In this section, the NAs are replaced by the average step count of the corresponding intervale averaged over the relevant days in the data-set. </p>
+
 <pre><code class="r">NumberOfNAs &lt;- sum(is.na(data_df[,1]))
 
 data_df2 &lt;- data_df

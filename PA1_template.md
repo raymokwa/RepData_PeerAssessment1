@@ -60,6 +60,7 @@ The interval corresponding to the maximum number of steps is 835.
 
 
 ### Imputing missing values
+In this section, the NAs are replaced by the average step count of the corresponding intervale averaged over the relevant days in the data-set. 
 
 ```r
 NumberOfNAs <- sum(is.na(data_df[,1]))
